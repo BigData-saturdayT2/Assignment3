@@ -1,0 +1,7 @@
+apache-airflow[celery,postgres,s3]==2.10.2
+boto3
+selenium
+webdriver-manager==4.0.0
+python-dotenv
+requests
+snowflake-connector-python
