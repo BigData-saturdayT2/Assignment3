@@ -213,6 +213,7 @@ async def get_publications():
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
+        cursor.execute("USE SCHEMA ASSIGNEMNT_3.PUBLIC")
         query = "SELECT TITLE, BRIEF_SUMMARY, IMAGE_LINK, PDF_LINK FROM PUBLICATION_DATA"
         cursor.execute(query)
         rows = cursor.fetchall()
