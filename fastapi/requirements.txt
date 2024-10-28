@@ -1,7 +1,0 @@
-fastapi
-pydantic
-python-jose
-passlib[bcrypt]
-snowflake-connector-python
-python-dotenv
-boto3

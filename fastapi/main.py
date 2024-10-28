@@ -1,7 +1,7 @@
-from fastapi import FastAPI, HTTPException, Depends, status, Query
+from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
-from typing import Optional, Dict
+from typing import Optional
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -23,13 +23,17 @@ SNOWFLAKE_CONFIG = {
     'schema': os.getenv('SNOWFLAKE_SCHEMA')
 }
 
-# JWT and security configurations (hardcoded)
-SECRET_KEY = "your_secret_key"  # Replace with a strong key
+# JWT and security configurations
+SECRET_KEY = os.getenv('SECRET_KEY')  # Replace with a strong key
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
 
 # FastAPI app
 app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the FastAPI application!"}
 
 # Password context for hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -89,8 +93,7 @@ def get_user(username: str):
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
-        query = f"SELECT * FROM users WHERE username = '{username}'"
-        cursor.execute(query)
+        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
         row = cursor.fetchone()
         if row:
             return {"username": row[0], "password": row[1], "created_at": row[2]}
@@ -142,16 +145,6 @@ async def login(
     access_token = create_access_token(data={"sub": username})
     return {"access_token": access_token, "token_type": "bearer"}
 
-
-
-
-
-
-
-
-
-
-
 # Initialize S3 client
 s3_client = boto3.client(
     's3',
@@ -181,31 +174,6 @@ async def list_pdfs():
         return {"files": files}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-
-
-
-
-# Snowflake connection configuration using environment variables
-SNOWFLAKE_CONFIG = {
-    'user': os.getenv('SNOWFLAKE_USER'),
-    'password': os.getenv('SNOWFLAKE_PASSWORD'),
-    'account': os.getenv('SNOWFLAKE_ACCOUNT'),
-    'warehouse': os.getenv('SNOWFLAKE_WAREHOUSE'),
-    'database': os.getenv('SNOWFLAKE_DATABASE'),
-    'schema': os.getenv('SNOWFLAKE_SCHEMA')
-}
-
-# Snowflake database connection
-def get_db_connection():
-    return snowflake.connector.connect(
-        user=SNOWFLAKE_CONFIG['user'],
-        password=SNOWFLAKE_CONFIG['password'],
-        account=SNOWFLAKE_CONFIG['account'],
-        warehouse=SNOWFLAKE_CONFIG['warehouse'],
-        database=SNOWFLAKE_CONFIG['database'],
-        schema=SNOWFLAKE_CONFIG['schema']
-    )
 
 # Endpoint to retrieve data from PUBLICATION_DATA table
 @app.get("/publications")
