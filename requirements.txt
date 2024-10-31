@@ -1,9 +1,62 @@
+# FastAPI and related libraries
 fastapi
 pydantic
 python-jose
 passlib[bcrypt]
+
+# Snowflake connector
 snowflake-connector-python
+
+# Environment and AWS interaction
 python-dotenv
 boto3
+
+# Server and request handling
 uvicorn
+requests
+
+# Streamlit and UI components
+streamlit
 streamlit-option-menu
+
+# PDF processing and image handling
+pdf2image
+pillow
+
+# NVIDIA Embeddings (use the exact package name based on NVIDIA's documentation)
+# If NVIDIA embedding model libraries are needed, add them here.
+# e.g., nvidia-pyindex, nemo
+
+# YOLOX - Object Detection
+# YOLOX may have additional dependencies; check YOLOX documentation for specific versions.
+torch
+torchvision 
+torchaudio
+cython
+opencv-python
+setuptools
+wheel
+cmake
+yolox
+
+# PaddleOCR - OCR for text extraction
+paddlepaddle
+paddleocr
+
+# Pinecone - Vector database for storing embeddings
+pinecone-client
+
+# Numpy for embedding operations
+numpy
+
+llama-index
+llama-index-embeddings-nvidia
+llama-index-vector-stores-pinecone
+llama-index-llms-nvidia
+
+nemo-toolkit[all]
+huggingface_hub==0.14.1
+transformers==4.30.2
+
+
+
