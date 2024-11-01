@@ -5,10 +5,17 @@ from typing import Optional
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from llama_index.embeddings.nvidia import NVIDIAEmbedding
+import pinecone
 import snowflake.connector
 from dotenv import load_dotenv
+import requests
 import boto3
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from document_processors import get_pdf_documents, parse_all_tables, parse_all_images
+from pinecone import Pinecone, ServerlessSpec
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -27,6 +34,37 @@ SNOWFLAKE_CONFIG = {
 SECRET_KEY = os.getenv('SECRET_KEY')  # Replace with a strong key
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
+
+EMBD_API_KEY=os.getenv('EMBD_API_KEY')
+
+# Initialize NVIDIA embedding model and Pinecone
+nvidia_embedding = NVIDIAEmbedding(model="nvidia/nv-embedqa-e5-v5", truncate="END")
+
+# Create an instance of Pinecone
+pc = Pinecone(
+    api_key=os.environ.get("PINECONE_API_KEY")
+)
+
+# Define the index name
+index_name = 'llm-index'
+
+# Check if the index exists and create it if not
+if index_name not in pc.list_indexes().names():
+    pc.create_index(
+        name=index_name,
+        dimension=1536,  # Ensure this matches the embedding dimensions
+        metric='euclidean',  # Use the metric you need (e.g., cosine, euclidean, etc.)
+        spec=ServerlessSpec(
+            cloud='aws',  # Specify the cloud provider
+            region='us-east-1'  # Specify the region
+        )
+    )
+    print(f"Index '{index_name}' created.")
+else:
+    print(f"Index '{index_name}' already exists.")
+
+# Access the index
+index = pc.Index(index_name)
 
 # FastAPI app
 app = FastAPI()
@@ -122,6 +160,24 @@ def create_user(username: str, password: str):
         cursor.close()
         connection.close()
 
+def embed_and_store_documents(documents, doc_id_prefix):
+    vectors = []
+    for i, doc in enumerate(documents):
+        doc_data = doc.dict() if hasattr(doc, 'dict') else {"text": doc.text, "metadata": doc.metadata}
+        
+        text = doc_data.get("text")
+        metadata = doc_data.get("metadata", {})
+
+        try:
+            embedding = nvidia_embedding.embed(text)
+            unique_id = f"{doc_id_prefix}-{i}"
+            vectors.append((unique_id, embedding, metadata))
+        except Exception as e:
+            print(f"Error embedding document {i} with prefix {doc_id_prefix}: {e}")
+
+    if vectors:
+        index.upsert(vectors)
+
 # API Endpoints
 @app.post("/signup")
 async def signup(
@@ -196,6 +252,42 @@ async def get_publications():
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error retrieving publications: {str(e)}")
+    
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@app.get("/process_pdf")
+async def process_pdf(title: str):
+    try:
+        # Fetch PDF link from Snowflake
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute("USE SCHEMA ASSIGNEMNT_3.PUBLIC")
+        cursor.execute("SELECT PDF_LINK FROM PUBLICATION_DATA WHERE TITLE = %s", (title,))
+        result = cursor.fetchone()
+        
+        if not result:
+            raise HTTPException(status_code=404, detail="PDF link not found for the given title")
+
+        pdf_link = result[0]
+        s3_object_key = pdf_link.replace(f"https://{BUCKET_NAME}.s3.amazonaws.com/", "")
+
+        # Retrieve PDF from S3
+        response = s3_client.get_object(Bucket=BUCKET_NAME, Key=s3_object_key)
+        pdf_content = response['Body'].read()
+
+        # Process the PDF content
+        documents = get_pdf_documents(pdf_content)  # Assumes this returns list of chunked docs
+
+        # Embed and store documents in Pinecone
+        embed_and_store_documents(documents, title.replace(" ", "_"))
+
+        return {"status": "success", "documents": [doc for doc in documents]}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing PDF: {str(e)}")
     
     finally:
         cursor.close()
