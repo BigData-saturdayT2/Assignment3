@@ -9,12 +9,12 @@ This project involves creating a comprehensive data pipeline and interactive app
 ## Data Flow and Architecture
 Below is an overview of the data flow and ETL architecture used in the project:
 
-![Airflow ETL and Data Flow Architecture](./images/airflow_etl_and_data_flow_architecture.png)
+![Airflow ETL and Data Flow Architecture](./diagrams/images/flow_diagram.png)
 
 ## Live Application Links
 - **Deployed Application**: [Streamlit App Link]
 - **Google Codelabs**: [[code labs](https://codelabs-preview.appspot.com/?file_id=11XVdlzZ8DJotFKU9-hZb4OrUASjitlK7xsWqiVxxNzg#0)]
-- **GitHub Repository**: [[GitHub Repo Link](https://github.com/BigData-saturdayT2/pdf-intelligence)]
+- **GitHub Repository**: [[GitHub Repo Link](https://github.com/BigData-saturdayT2/Assignment3)]
 
 ## Problem Statement
 The primary goal of this project is to develop an automated data pipeline, that scrapes data and build an interactive platform that enables efficient exploration, summarization, and querying of CFA Institute Research Foundation Publications data using advanced AI technologies.
