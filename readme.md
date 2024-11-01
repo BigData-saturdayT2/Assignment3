@@ -19,13 +19,6 @@ Below is an overview of the data flow and ETL architecture used in the project:
 ## Problem Statement
 The primary goal of this project is to develop an automated data pipeline, that scrapes data and build an interactive platform that enables efficient exploration, summarization, and querying of CFA Institute Research Foundation Publications data using advanced AI technologies.
 
-## Project Goals
-- **Automated Text Extraction**: Implement extraction pipelines using PyPDF2 (open-source) and IBM Watson (enterprise) tools.
-- **User Authentication**: Secure user access with FastAPI and JWT authentication.
-- **Data Storage**: Store extracted text in AWS S3 and RDS for structured queries.
-- **User Interface**: Build a Streamlit-based interface to allow users to interact with the extracted data.
-- **Deployment**: Use Docker Compose to containerize the application for deployment.
-
 ## Technologies and Their Roles:
 - **Apache Airflow**: Automates the data ingestion pipeline, including scraping publication data and uploading assets to AWS S3.
 - **AWS S3**: Serves as the storage solution for images and PDF files extracted from the CFA Institute Research Foundation Publications.
@@ -67,12 +60,12 @@ The primary goal of this project is to develop an automated data pipeline, that 
    ```bash
    pip install -r requirements.txt
    ```
-4. **Run the Streamlit application**:
+4. **Run the Streamlit application(in a separate terminal)**:
    ```bash
    cd streamlit 
    streamlit run app.py
    ```
-5. **Run the Fastapi application**:
+5. **Run the Fastapi application(in a separate terminal)**:
    ```bash
    cd fastapi
    uvicorn main:app --reload
