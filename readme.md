@@ -82,12 +82,12 @@ docker-compose up
 - **Video Walkthrough**: [Video Link]
 
 ## Contribution
-All team members contributed equally to this project.
+All team members contributed to this project.
 WE ATTEST THAT WE HAVEN’T USED ANY OTHER STUDENTS’ WORK IN OUR
 ASSIGNMENT AND ABIDE BY THE POLICIES LISTED IN THE STUDENT HANDBOOK
 
 | Name     | Work Done                                                                                           |
 |----------|-----------------------------------------------------------------------------------------------------|
-| Abhinav  | Worked on Streamlit, Dockerizing Streamlit and FastAPI, Multimodal RAGs, NVIDIA models, Pinecone            | 
-| Dheer    | Worked on FastAPI, NVIDIA models, Airflow dags, Documentation, Architecture Diagram                  |
-| Nishita  | Worked on web scraping, Airflow Dags, S3 and Snowflake setup, Multimodal RAGs, NVIDIA models, Documentation |
+| Abhinav (25%) | Worked on Streamlit, Dockerizing Streamlit and FastAPI, Multimodal RAGs, NVIDIA models, Pinecone            | 
+| Dheer  (25%) | Worked on FastAPI, NVIDIA models, Airflow dags, Documentation, Architecture Diagram                  |
+| Nishita (50%) | Worked on web scraping, Airflow Dags, S3 and Snowflake setup, Multimodal RAGs, NVIDIA models, Documentation |
