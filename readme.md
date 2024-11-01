@@ -13,7 +13,7 @@ Below is an overview of the data flow and ETL architecture used in the project:
 
 ## Live Application Links
 - **Deployed Application**: [Streamlit App Link]
-- **Google Codelabs**: [[code labs](https://codelabs-preview.appspot.com/?file_id=11XVdlzZ8DJotFKU9-hZb4OrUASjitlK7xsWqiVxxNzg#0)]
+- **Google Codelabs**: [[code labs](https://codelabs-preview.appspot.com/?file_id=https://docs.google.com/document/d/1IhIWrIgB9EdNE-lYjc7TGw0_5eD7awxhBJDtC-qR8gE/edit?tab=t.0#2)]
 - **GitHub Repository**: [[GitHub Repo Link](https://github.com/BigData-saturdayT2/Assignment3)]
 
 ## Problem Statement
