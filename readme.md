@@ -9,7 +9,7 @@ This project involves creating a comprehensive data pipeline and interactive app
 ## Data Flow and Architecture
 Below is an overview of the data flow and ETL architecture used in the project:
 
-![Airflow ETL and Data Flow Architecture](./diagrams/images/flow_diagram.png)
+![Airflow ETL and Data Flow Architecture](./diagrams/flow_diagram.png)
 
 ## Live Application Links
 - **Deployed Application**: [Streamlit App Link]
